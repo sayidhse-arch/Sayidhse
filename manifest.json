@@ -1,0 +1,27 @@
+{
+  "name": "دفتر ثبت گزارش HSE",
+  "short_name": "گزارش HSE",
+  "description": "ثبت گزارش‌های سمپاشی و بازدید بهداشت دکل‌ها، منازل و ادارات سازمانی",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#11161A",
+  "theme_color": "#11161A",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
