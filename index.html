@@ -367,10 +367,11 @@
     </div>
 
     <div class="field">
-      <label>اسامی اعزامی — نام رو تایپ کن و Enter بزن یا روی «افزودن» بزن</label>
+      <label>اسامی اعزامی — از لیست انتخاب کن یا نام جدید تایپ کن و Enter بزن</label>
       <div id="chip-wrap" class="chip-input" style="flex-wrap:wrap;"></div>
       <div style="display:flex; gap:10px; margin-top:8px;">
-        <input type="text" id="f-name-input" placeholder="نام و نام خانوادگی..." style="flex:1;">
+        <input type="text" id="f-name-input" list="registered-names-list" placeholder="نام و نام خانوادگی..." style="flex:1;">
+        <datalist id="registered-names-list"></datalist>
         <button type="button" id="add-name-btn" style="flex-shrink:0; background:var(--yellow); color:#1a1a1a; border:none; border-radius:8px; padding:0 18px; font-weight:800; font-size:13px; cursor:pointer; font-family:inherit;">افزودن</button>
       </div>
     </div>
@@ -489,7 +490,7 @@
 // و آدرس Web App رو همونجا وارد کن — نیازی به تغییر این فایل نیست.
 // راهنمای کامل ساخت این آدرس توی فایل «راهنمای-راه‌اندازی.md» هست.
 // =====================================================================
-const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbxWHE4rHnU3yedTHy2fil9iCDflt-435TbdcFsBd7Cr8gDKOjR6lgiSqV5xzt0hBsA3zQ/exec';
+const DEFAULT_API_URL = 'https://script.google.com/macros/s/AKfycbwJSVfYuobdYF8tFLBxEckb06qHfb9zcTjlIvaGrmg4bXBIwsX2J61884_zY0rKGpL1/exec';
 const DEFAULT_API_TOKEN = 'Sayid20052010hse';
 // =====================================================================
 
@@ -685,11 +686,17 @@ async function authUser(name, password){
   return await res.json();
 }
 
-const ADMIN_UNLOCKED_STORAGE_KEY = 'hse-admin-unlocked';
+// قفل ادمین به «اسم کاربر» وصل است، نه به گوشی: اسم کسی که قفل رو باز کرده
+// ذخیره می‌شه و فقط وقتی کاربر فعلی همون اسم باشه دسترسی هست.
+const ADMIN_UNLOCKED_STORAGE_KEY = 'hse-admin-unlocked-for';
+try{ localStorage.removeItem('hse-admin-unlocked'); }catch(e){} // پرچم قدیمیِ مخصوص گوشی
 
 function isAdminUnlocked(){
-  return localStorage.getItem(ADMIN_UNLOCKED_STORAGE_KEY) === '1';
+  const me = getUserName();
+  return !!me && localStorage.getItem(ADMIN_UNLOCKED_STORAGE_KEY) === me;
 }
+
+let applyAdminLockState = function(){};
 
 async function checkAdminAccess(password){
   if(!isApiConfigured()){
@@ -706,6 +713,24 @@ async function checkAdminAccess(password){
   return await res.json();
 }
 
+async function refreshRegisteredNamesList(){
+  try{
+    if(!isApiConfigured()) return;
+    const res = await fetch(getApiUrl(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'listUsers', token: getApiToken() })
+    });
+    if(!res.ok) return;
+    const json = await res.json();
+    if(!json.ok || !Array.isArray(json.names)) return;
+    const datalist = document.getElementById('registered-names-list');
+    datalist.innerHTML = json.names.map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
+  }catch(e){
+    console.error('refreshRegisteredNamesList error:', e);
+  }
+}
+
 function initAdminGate(){
   const lockPanel = document.getElementById('admin-lock-panel');
   const gatedContent = document.getElementById('admin-gated-content');
@@ -713,19 +738,26 @@ function initAdminGate(){
   const errorEl = document.getElementById('admin-password-error');
   const btn = document.getElementById('admin-password-btn');
 
-  function unlock(){
-    lockPanel.style.display = 'none';
-    gatedContent.style.display = 'block';
-  }
-
-  if(isAdminUnlocked()){
-    unlock();
-    return;
-  }
+  applyAdminLockState = function(){
+    if(isAdminUnlocked()){
+      lockPanel.style.display = 'none';
+      gatedContent.style.display = 'block';
+    } else {
+      lockPanel.style.display = '';
+      gatedContent.style.display = 'none';
+      input.value = '';
+      errorEl.textContent = '';
+    }
+  };
+  applyAdminLockState();
 
   async function attemptUnlock(){
     const password = input.value.trim();
     errorEl.textContent = '';
+    if(!getUserName()){
+      errorEl.textContent = 'اول با اسمت وارد شو.';
+      return;
+    }
     if(!password){
       errorEl.textContent = 'رمز رو وارد کن.';
       return;
@@ -736,8 +768,8 @@ function initAdminGate(){
     try{
       const result = await checkAdminAccess(password);
       if(result.ok){
-        localStorage.setItem(ADMIN_UNLOCKED_STORAGE_KEY, '1');
-        unlock();
+        localStorage.setItem(ADMIN_UNLOCKED_STORAGE_KEY, getUserName());
+        applyAdminLockState();
       } else {
         errorEl.textContent = result.error || 'رمز اشتباهه.';
         input.value = '';
@@ -790,8 +822,10 @@ function initNameGate(onReady){
       const result = await authUser(name, password);
       if(result.ok){
         setUserName(name);
+        applyAdminLockState();
         hideNameGate();
         toast(result.mode === 'register' ? 'اسم و رمزت ثبت شد' : 'خوش اومدی، ' + name);
+        refreshRegisteredNamesList();
         if(typeof renderMyReports === 'function'){
           try{ renderMyReports(); }catch(e){ /* not ready yet on first load, ignored */ }
         }
@@ -827,6 +861,7 @@ function initNameGate(onReady){
 
   if(existing){
     appStarted = true;
+    refreshRegisteredNamesList();
     onReady();
   } else {
     showNameGate('');
@@ -1300,21 +1335,23 @@ function renderOverdueRigs(){
   });
 }
 
-function renderSimpleRecordCard(r){
+function renderSimpleRecordCard(r, viewerName){
   const tags = (r.purposes || []).map(p => {
     const cls = purposeTagClass(p);
     return `<span class="tag ${cls}">${escapeHtml(p === 'سایر' && r.purposeOther ? r.purposeOther : p)}</span>`;
   }).join('');
   const pendingBadge = r.isPending ? `<span class="tag" style="background:rgba(244,196,48,.18); color:var(--yellow); border:1px solid rgba(244,196,48,.4);">⏳ در صف ارسال</span>` : '';
+  const memberBadge = (viewerName && r.registeredBy !== viewerName && (r.members || []).includes(viewerName))
+    ? `<span class="tag rig">عضو گروه اعزامی</span>` : '';
   return `
   <div class="record" style="grid-template-columns:1fr;">
     <div>
       <div class="rec-head" style="margin-bottom:6px;">
         <div>
           <div class="rec-title" style="font-size:14.5px;">${escapeHtml(r.destName)}</div>
-          <div class="rec-sub">${escapeHtml(r.date)} · ${escapeHtml(r.registeredBy || 'نامشخص')}</div>
+          <div class="rec-sub">${escapeHtml(r.date)} · ثبت‌کننده: ${escapeHtml(r.registeredBy || 'نامشخص')}</div>
         </div>
-        <div class="tag-row">${pendingBadge}${tags}</div>
+        <div class="tag-row">${pendingBadge}${memberBadge}${tags}</div>
       </div>
       ${r.missionReport ? `<div class="report-box"><span class="lbl">گزارش ماموریت</span>${escapeHtml(r.missionReport)}</div>` : ''}
       ${r.sprayReport ? `<div class="report-box"><span class="lbl">گزارش سمپاشی</span>${escapeHtml(r.sprayReport)}</div>` : ''}
@@ -1326,7 +1363,7 @@ function renderMyReports(){
   const wrap = document.getElementById('my-reports-list');
   const toggleBtn = document.getElementById('my-reports-toggle-btn');
   const myName = getUserName();
-  const mine = allRecords.filter(r => r.registeredBy === myName)
+  const mine = allRecords.filter(r => r.registeredBy === myName || (r.members || []).includes(myName))
     .slice().sort((a,b) => (b.updatedAt||'').localeCompare(a.updatedAt||''));
 
   toggleBtn.textContent = wrap.style.display === 'none'
@@ -1334,10 +1371,10 @@ function renderMyReports(){
     : 'مخفی کردن گزارش‌های من';
 
   if(mine.length === 0){
-    wrap.innerHTML = `<div class="empty" style="padding:20px;">هنوز هیچ گزارشی به اسم تو ثبت نشده.</div>`;
+    wrap.innerHTML = `<div class="empty" style="padding:20px;">هنوز هیچ گزارشی که توش بوده باشی ثبت نشده.</div>`;
     return;
   }
-  wrap.innerHTML = mine.map(renderSimpleRecordCard).join('');
+  wrap.innerHTML = mine.map(r => renderSimpleRecordCard(r, myName)).join('');
 }
 
 const EXCEL_COLUMNS = [
