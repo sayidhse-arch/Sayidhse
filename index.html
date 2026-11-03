@@ -304,6 +304,10 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span id="user-badge-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">—</span>
       </button>
+      <button id="admin-view-btn" title="پنل مدیریت" style="background:transparent; border:1px solid var(--line); color:var(--yellow); border-radius:8px; padding:6px 10px; cursor:pointer; font-family:inherit; font-size:12.5px; display:flex; align-items:center; gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/></svg>
+        مدیریت
+      </button>
       <button id="settings-btn" title="تنظیمات اتصال" style="background:transparent; border:1px solid var(--line); color:var(--steel); border-radius:8px; padding:6px 10px; cursor:pointer; font-family:inherit; font-size:12.5px; display:flex; align-items:center; gap:6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         تنظیمات
@@ -315,6 +319,8 @@
 </header>
 
 <main>
+
+  <div id="view-main">
 
   <div class="panel" id="settings-panel" style="display:none;">
     <h2>تنظیمات اتصال به پایگاه داده</h2>
@@ -392,12 +398,7 @@
       </div>
       <div class="field">
         <label>هدف ماموریت</label>
-        <div class="pill-group" id="purpose-group">
-          <div class="pill" data-val="سمپاشی">سمپاشی</div>
-          <div class="pill" data-val="بازدید بهداشت">بازدید بهداشت</div>
-          <div class="pill" data-val="موریانه‌زدایی">موریانه‌زدایی</div>
-          <div class="pill" data-val="آزمایش آب">آزمایش آب</div>
-          <div class="pill" data-val="سایر">سایر / ماموریت اداری</div>
+        <div class="pill-group" id="purpose-group"></div>
         </div>
       </div>
     </div>
@@ -482,10 +483,20 @@
     <div id="my-reservations"></div>
   </div>
 
+  </div><!-- /view-main -->
+
+  <div id="view-admin" style="display:none;">
+  <div class="panel" style="padding:14px 22px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+      <h2 style="margin:0;">پنل مدیریت</h2>
+      <button type="button" id="admin-back-btn" class="btn btn-ghost btn-sm">← بازگشت به صفحه‌ی اصلی</button>
+    </div>
+  </div>
+
   <div class="panel" id="admin-lock-panel">
-    <h2><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" style="vertical-align:-3px; margin-inline-end:4px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>گزارش‌های ثبت‌شده و گزارش هر دکل</h2>
+    <h2><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" style="vertical-align:-3px; margin-inline-end:4px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>ورود به پنل مدیریت</h2>
     <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
-      این دو بخش با یه رمز جداگانه محافظت می‌شن. رمز رو از مسئول HSE بگیر — فقط یه‌بار لازمه وارد کنی.
+      پنل مدیریت (گزارش‌های ثبت‌شده، گزارش هر دکل و تنظیمات اپ) با یه رمز جداگانه محافظت می‌شه. رمز رو از مسئول HSE بگیر — فقط یه‌بار لازمه وارد کنی.
     </p>
     <input type="password" id="admin-password-input" placeholder="رمز دسترسی" autocomplete="off" style="width:100%; background:var(--bg-700); border:1px solid var(--line); color:var(--paper); padding:12px 14px; border-radius:9px; font-family:inherit; font-size:14.5px; outline:none; text-align:center; margin-bottom:10px;">
     <div id="admin-password-error" style="color:var(--red); font-size:12.5px; min-height:18px; margin-bottom:8px; text-align:center;"></div>
@@ -493,6 +504,19 @@
   </div>
 
   <div id="admin-gated-content" style="display:none;">
+
+  <div class="panel">
+    <h2>مدیریت هدف‌های ماموریت</h2>
+    <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
+      هدف‌هایی که موقع ثبت گزارش قابل انتخاب هستن. هدف جدید اضافه کن یا هدفی رو حذف کن؛ گزارش‌های قبلی پاک نمی‌شن. سه هدف «سمپاشی»، «بازدید بهداشت» و «سایر» ثابت هستن و حذف نمی‌شن.
+    </p>
+    <div style="display:flex; gap:10px; margin-bottom:12px;">
+      <input type="text" id="purpose-add-input" placeholder="مثلاً ضدعفونی کاروان" style="flex:1;">
+      <button type="button" id="purpose-add-btn" class="btn btn-primary" style="white-space:nowrap;">افزودن هدف</button>
+    </div>
+    <div id="purpose-admin-msg" style="color:var(--red); font-size:12.5px; min-height:0; margin-bottom:8px;"></div>
+    <div id="purpose-admin-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+  </div>
 
   <div class="panel">
     <h2>مدیریت لیست دکل‌ها</h2>
@@ -537,12 +561,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8496A1" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="search-input" placeholder="جستجو بر اساس نام فرد، دکل، آدرس یا تاریخ...">
       </div>
-      <select id="filter-purpose" style="max-width:180px;">
-        <option value="">همه اهداف</option>
-        <option value="سمپاشی">فقط سمپاشی</option>
-        <option value="بازدید بهداشت">فقط بازدید بهداشت</option>
-        <option value="سایر">سایر</option>
-      </select>
+      <select id="filter-purpose" style="max-width:180px;"><option value="">همه اهداف</option></select>
       <button type="button" id="export-all-btn" class="btn btn-ghost" style="white-space:nowrap;">خروجی اکسل</button>
     </div>
     <div id="loading-indicator" class="loading-line" style="display:none;"></div>
@@ -550,6 +569,8 @@
   </div>
 
   </div>
+
+  </div><!-- /view-admin -->
 
   <p class="footer-note">دفتر ثبت گزارش HSE — همه‌ی گزارش‌ها روی Google Sheets ذخیره می‌شن و بین هر کسی که به این صفحه دسترسی داره، مشترک هستن.</p>
 </main>
@@ -668,12 +689,16 @@ const CONFIG_CACHE_KEY = 'hse-config-cache';
 let RIG_LIST = [];
 for(let n = 21; n <= 93; n++) RIG_LIST.push(n);
 let VEHICLE_MANAGERS = [];
+const PROTECTED_PURPOSES = ['سمپاشی', 'بازدید بهداشت', 'سایر'];
+let PURPOSES = ['سمپاشی', 'بازدید بهداشت', 'موریانه‌زدایی', 'آزمایش آب', 'سایر'];
+function purposeLabel(p){ return p === 'سایر' ? 'سایر / ماموریت اداری' : p; }
 let REGISTERED_NAMES = [];
 (function loadCachedConfig(){
   try{
     const c = JSON.parse(localStorage.getItem(CONFIG_CACHE_KEY) || 'null');
     if(c && Array.isArray(c.rigs) && c.rigs.length) RIG_LIST = c.rigs;
     if(c && Array.isArray(c.vehicleManagers)) VEHICLE_MANAGERS = c.vehicleManagers;
+    if(c && Array.isArray(c.purposes) && c.purposes.length) PURPOSES = c.purposes;
   }catch(e){}
 })();
 const OVERDUE_DAYS_THRESHOLD = 90; // سه ماه
@@ -1065,16 +1090,43 @@ nameInput.addEventListener('input', (e) => {
 document.getElementById('add-name-btn').addEventListener('click', addNameFromInput);
 
 // ---------- purpose pills ----------
-document.querySelectorAll('#purpose-group .pill').forEach(pill => {
-  pill.addEventListener('click', () => {
-    const val = pill.dataset.val;
-    const idx = selectedPurposes.indexOf(val);
-    if(idx >= 0){ selectedPurposes.splice(idx,1); pill.classList.remove('active','orange'); }
-    else { selectedPurposes.push(val); pill.classList.add('active'); if(val==='سمپاشی') pill.classList.add('orange'); }
-    document.getElementById('spray-report-wrap').style.display = selectedPurposes.includes('سمپاشی') ? 'block' : 'none';
-    document.getElementById('purpose-other-wrap').style.display = selectedPurposes.includes('سایر') ? 'block' : 'none';
+function renderPurposePills(){
+  const group = document.getElementById('purpose-group');
+  // هدف‌هایی که الان انتخاب شدن ولی از لیست حذف شدن (مثلاً موقع ویرایش گزارش قدیمی) هم نشون داده می‌شن
+  const list = PURPOSES.concat(selectedPurposes.filter(p => !PURPOSES.includes(p)));
+  group.innerHTML = '';
+  list.forEach(p => {
+    const el = document.createElement('div');
+    el.className = 'pill' + (selectedPurposes.includes(p) ? ' active' : '') + (p === 'سمپاشی' && selectedPurposes.includes(p) ? ' orange' : '');
+    el.dataset.val = p;
+    el.textContent = purposeLabel(p);
+    group.appendChild(el);
   });
+  document.getElementById('spray-report-wrap').style.display = selectedPurposes.includes('سمپاشی') ? 'block' : 'none';
+  document.getElementById('purpose-other-wrap').style.display = selectedPurposes.includes('سایر') ? 'block' : 'none';
+}
+document.getElementById('purpose-group').addEventListener('click', (e) => {
+  const pill = e.target.closest('.pill');
+  if(!pill) return;
+  const val = pill.dataset.val;
+  const idx = selectedPurposes.indexOf(val);
+  if(idx >= 0) selectedPurposes.splice(idx, 1); else selectedPurposes.push(val);
+  renderPurposePills();
 });
+
+let purposeFilterSig = '';
+function buildPurposeFilter(){
+  const sel = document.getElementById('filter-purpose');
+  const extra = [];
+  (allRecords || []).forEach(r => (r.purposes || []).forEach(p => { if(!PURPOSES.includes(p) && !extra.includes(p)) extra.push(p); }));
+  const list = PURPOSES.concat(extra);
+  const sig = list.join('|');
+  if(sig === purposeFilterSig) return;
+  purposeFilterSig = sig;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">همه اهداف</option>' + list.map(p => `<option value="${escapeHtml(p)}">${p === 'سایر' ? 'سایر' : 'فقط ' + escapeHtml(p)}</option>`).join('');
+  if(prev && list.includes(prev)) sel.value = prev;
+}
 
 function purposeTagClass(p){
   if(p === 'سمپاشی') return 'spray';
@@ -1173,9 +1225,7 @@ function resetForm(){
   document.getElementById('f-purpose-other').value = '';
   members = [];
   selectedPurposes = [];
-  document.querySelectorAll('#purpose-group .pill').forEach(p => p.classList.remove('active','orange'));
-  document.getElementById('spray-report-wrap').style.display = 'none';
-  document.getElementById('purpose-other-wrap').style.display = 'none';
+  renderPurposePills();
   renderChips();
   editingId = null;
   document.getElementById('form-title-text').textContent = 'ثبت گزارش جدید';
@@ -1374,16 +1424,7 @@ function editRecord(rec){
   document.getElementById('f-purpose-other').value = rec.purposeOther || '';
   members = [...rec.members];
   selectedPurposes = [...rec.purposes];
-  document.querySelectorAll('#purpose-group .pill').forEach(p => {
-    if(selectedPurposes.includes(p.dataset.val)){
-      p.classList.add('active');
-      if(p.dataset.val === 'سمپاشی') p.classList.add('orange');
-    } else {
-      p.classList.remove('active','orange');
-    }
-  });
-  document.getElementById('spray-report-wrap').style.display = selectedPurposes.includes('سمپاشی') ? 'block' : 'none';
-  document.getElementById('purpose-other-wrap').style.display = selectedPurposes.includes('سایر') ? 'block' : 'none';
+  renderPurposePills();
   renderChips();
   document.getElementById('form-title-text').textContent = 'ویرایش گزارش';
   document.getElementById('edit-badge').style.display = 'inline-block';
@@ -1615,6 +1656,7 @@ function populateRigLookupSelect(){
 document.getElementById('rig-lookup-select').addEventListener('change', () => renderRigLookup());
 
 function renderRecords(){
+  buildPurposeFilter();
   const search = document.getElementById('search-input').value.trim().toLowerCase();
   const purposeFilter = document.getElementById('filter-purpose').value;
   let filtered = allRecords.filter(r => {
@@ -1774,11 +1816,14 @@ function authFields(){
 
 function saveConfigCache(){
   try{
-    localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify({ rigs: RIG_LIST, vehicleManagers: VEHICLE_MANAGERS }));
+    localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify({ rigs: RIG_LIST, vehicleManagers: VEHICLE_MANAGERS, purposes: PURPOSES }));
   }catch(e){}
 }
 
 function applyConfig(){
+  renderPurposePills();
+  buildPurposeFilter();
+  renderPurposeAdmin();
   populateRigSelect();
   populateRigLookupSelect();
   renderOverdueRigs();
@@ -1794,6 +1839,7 @@ async function loadConfig(){
     if(!json.ok) return;
     if(Array.isArray(json.rigs) && json.rigs.length) RIG_LIST = json.rigs.map(Number);
     if(Array.isArray(json.vehicleManagers)) VEHICLE_MANAGERS = json.vehicleManagers;
+    if(Array.isArray(json.purposes) && json.purposes.length) PURPOSES = json.purposes;
     saveConfigCache();
     applyConfig();
   }catch(e){
@@ -2164,101 +2210,3 @@ document.getElementById('r-submit-btn').addEventListener('click', async () => {
         passengers: document.getElementById('r-passengers').value.trim(),
         vehicleId: document.getElementById('r-vehicle').value
       }
-    }, authFields()));
-    if(!json.ok){ errEl.textContent = json.error || 'ثبت نشد.'; return; }
-    ['r-destination', 'r-purpose', 'r-passengers'].forEach(id => { document.getElementById(id).value = ''; });
-    document.getElementById('r-vehicle').value = '';
-    toast('درخواست رزرو ثبت شد');
-    await loadVehicleBank();
-  }catch(e){
-    errEl.textContent = 'خطا در ارتباط: ' + ((e && e.message) || 'نامشخص');
-  }finally{
-    btn.disabled = false;
-  }
-});
-
-// init
-if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch(err => console.error('SW registration failed:', err));
-  });
-}
-
-// --- install-as-app banner ---
-(function initInstallBanner(){
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if(isStandalone || localStorage.getItem('hse-install-dismissed')) return;
-
-  const banner = document.getElementById('install-banner');
-  const textEl = document.getElementById('install-banner-text');
-  const installBtn = document.getElementById('install-btn');
-  const dismissBtn = document.getElementById('install-dismiss-btn');
-
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  let deferredPrompt = null;
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    banner.style.display = 'flex';
-    installBtn.style.display = 'inline-block';
-    textEl.textContent = 'این صفحه رو می‌تونی مثل یه اپ روی گوشیت نصب کنی.';
-  });
-
-  if(isIOS){
-    banner.style.display = 'flex';
-    textEl.textContent = 'برای نصب روی آیفون: دکمه‌ی اشتراک‌گذاری Safari رو بزن، بعد «Add to Home Screen» رو انتخاب کن.';
-  }
-
-  installBtn.addEventListener('click', async () => {
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    banner.style.display = 'none';
-  });
-
-  dismissBtn.addEventListener('click', () => {
-    banner.style.display = 'none';
-    localStorage.setItem('hse-install-dismissed', '1');
-  });
-})();
-
-try{ populateRigSelect(); populateRigLookupSelect(); }catch(e){ console.error('rig select init failed', e); }
-document.getElementById('overdue-toggle-btn').addEventListener('click', () => {
-  const wrap = document.getElementById('overdue-list');
-  const btn = document.getElementById('overdue-toggle-btn');
-  const isHidden = wrap.style.display === 'none';
-  wrap.style.display = isHidden ? 'block' : 'none';
-  const count = computeOverdueRigs().length;
-  btn.textContent = isHidden ? 'مخفی کردن لیست' : ('نمایش لیست (' + toPersianDigits(count) + ' مورد)');
-});
-document.getElementById('my-reports-toggle-btn').addEventListener('click', () => {
-  const wrap = document.getElementById('my-reports-list');
-  wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
-  renderMyReports();
-});
-// هر مرحله جدا اجرا می‌شه تا اگه یکی خطا داد، ورود و بقیه‌ی اپ از کار نیفته
-function safeRun(label, fn){
-  try{ fn(); }catch(e){ console.error('init step failed: ' + label, e); }
-}
-safeRun('renderOverdueRigs', renderOverdueRigs);
-safeRun('renderRigLookup', renderRigLookup);
-safeRun('renderRigAdmin', renderRigAdmin);
-safeRun('renderManagerAdmin', renderManagerAdmin);
-safeRun('renderVehicleBank', renderVehicleBank);
-safeRun('renderMyReports', renderMyReports);
-safeRun('updateOfflineBanner', updateOfflineBanner);
-safeRun('trySyncOfflineQueue', trySyncOfflineQueue);
-safeRun('initAdminGate', initAdminGate);
-safeRun('initSettingsPanel', initSettingsPanel);
-initNameGate(() => {
-  safeRun('resetForm', resetForm);
-  safeRun('loadRecords', loadRecords);
-  safeRun('loadConfig', loadConfig);
-  safeRun('loadVehicleBank', loadVehicleBank);
-});
-</script>
-
-</body>
-</html>
