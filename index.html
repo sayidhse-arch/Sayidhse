@@ -917,7 +917,7 @@ function initNameGate(onReady){
       const result = await authUser(name, password);
       if(result.ok){
         setUserName(name);
-        localStorage.setItem(USER_SESSION_KEY, result.session || '');
+        localStorage.setItem(USER_SESSION_KEY, result.session || 'legacy');
         applyAdminLockState();
         hideNameGate();
         toast(result.mode === 'register' ? 'اسم و رمزت ثبت شد' : 'خوش اومدی، ' + name);
@@ -2224,10 +2224,6 @@ document.getElementById('my-reports-toggle-btn').addEventListener('click', () =>
   wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
   renderMyReports();
 });
-renderOverdueRigs();
-renderRigLookup();
-renderRigAdmin();
-renderManagerAdmin();
-renderVehicleBank();
-renderMyReports();
-updateOfflineBann
+// هر مرحله جدا اجرا می‌شه تا اگه یکی خطا داد، ورود و بقیه‌ی اپ از کار نیفته
+function safeRun(label, fn){
+  try{ fn(); }catch(e){ c
