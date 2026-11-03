@@ -557,6 +557,21 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// اگه هر خطای برنامه‌نویسی پیش بیاد، متنش بالای صفحه نشون داده می‌شه تا بشه اسکرین‌شات گرفت
+window.addEventListener('error', function(ev){
+  try{
+    var d = document.getElementById('fatal-error-banner');
+    if(!d){
+      d = document.createElement('div');
+      d.id = 'fatal-error-banner';
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#C1443A;color:#fff;padding:10px 14px;font-size:12px;direction:ltr;text-align:left;word-break:break-word;';
+      (document.body || document.documentElement).appendChild(d);
+    }
+    d.textContent = 'ERROR: ' + (ev.message || 'unknown') + ' @ line ' + (ev.lineno || '?') + ':' + (ev.colno || '?');
+  }catch(e){}
+});
+</script>
+<script>
 // =====================================================================
 // تنظیمات اتصال به پایگاه داده (Google Sheets)
 // اگه فایل رو نمی‌تونی ادیت کنی، از دکمه‌ی «تنظیمات» بالای صفحه استفاده کن
@@ -2209,8 +2224,7 @@ if('serviceWorker' in navigator){
   });
 })();
 
-populateRigSelect();
-populateRigLookupSelect();
+try{ populateRigSelect(); populateRigLookupSelect(); }catch(e){ console.error('rig select init failed', e); }
 document.getElementById('overdue-toggle-btn').addEventListener('click', () => {
   const wrap = document.getElementById('overdue-list');
   const btn = document.getElementById('overdue-toggle-btn');
@@ -2226,4 +2240,25 @@ document.getElementById('my-reports-toggle-btn').addEventListener('click', () =>
 });
 // هر مرحله جدا اجرا می‌شه تا اگه یکی خطا داد، ورود و بقیه‌ی اپ از کار نیفته
 function safeRun(label, fn){
-  try{ fn(); }catch(e){
+  try{ fn(); }catch(e){ console.error('init step failed: ' + label, e); }
+}
+safeRun('renderOverdueRigs', renderOverdueRigs);
+safeRun('renderRigLookup', renderRigLookup);
+safeRun('renderRigAdmin', renderRigAdmin);
+safeRun('renderManagerAdmin', renderManagerAdmin);
+safeRun('renderVehicleBank', renderVehicleBank);
+safeRun('renderMyReports', renderMyReports);
+safeRun('updateOfflineBanner', updateOfflineBanner);
+safeRun('trySyncOfflineQueue', trySyncOfflineQueue);
+safeRun('initAdminGate', initAdminGate);
+safeRun('initSettingsPanel', initSettingsPanel);
+initNameGate(() => {
+  safeRun('resetForm', resetForm);
+  safeRun('loadRecords', loadRecords);
+  safeRun('loadConfig', loadConfig);
+  safeRun('loadVehicleBank', loadVehicleBank);
+});
+</script>
+
+</body>
+</html>
