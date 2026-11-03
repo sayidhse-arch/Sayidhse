@@ -214,6 +214,15 @@
   .tag.spray{background:rgba(224,103,43,.18); color:var(--orange); border:1px solid rgba(224,103,43,.4);}
   .tag.health{background:rgba(111,168,92,.18); color:var(--green); border:1px solid rgba(111,168,92,.4);}
   .tag.rig{background:rgba(132,150,161,.18); color:var(--steel); border:1px solid rgba(132,150,161,.4);}
+  .tag.free{background:rgba(111,168,92,.18); color:var(--green); border:1px solid rgba(111,168,92,.4);}
+  .tag.muted{background:rgba(132,150,161,.15); color:var(--steel); border:1px solid var(--line);}
+  .sub-h{font-size:14.5px; font-weight:800; margin:24px 0 10px; color:var(--yellow);}
+  .chip{display:inline-flex; align-items:center; gap:8px; background:var(--bg-700); border:1px solid var(--line); border-radius:20px; padding:6px 8px 6px 12px; font-size:13px; font-weight:700;}
+  .chip button{background:transparent; border:none; color:var(--red); cursor:pointer; font-size:16px; line-height:1; padding:0 4px; font-family:inherit;}
+  .row-btns{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .btn-sm{padding:7px 14px; font-size:12.5px; border-radius:8px;}
+  .name-check{display:flex; align-items:center; gap:10px; padding:8px 4px; font-size:14px; color:var(--paper); cursor:pointer; margin:0;}
+  .name-check input{width:18px; height:18px;}
   .tag.danger{background:rgba(193,68,58,.18); color:var(--red); border:1px solid rgba(193,68,58,.4);}
   .tag.termite{background:rgba(139,101,54,.22); color:#C9A66B; border:1px solid rgba(139,101,54,.45);}
   .tag.water{background:rgba(58,130,193,.18); color:#6FB6E0; border:1px solid rgba(58,130,193,.4);}
@@ -432,6 +441,47 @@
     <div id="my-reports-list" style="display:none; margin-top:14px;"></div>
   </div>
 
+  <div class="panel" id="vehicle-panel">
+    <h2>بانک خودرو <span class="badge" id="vehicle-free-badge">—</span></h2>
+    <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
+      وضعیت خودروهای اداره (آزاد یا در ماموریت). برای ماموریت، خودرو رو از همین‌جا درخواست رزرو کن؛ مسئول بانک خودرو بررسی و خودرو و راننده رو تعیین می‌کنه.
+    </p>
+    <div id="vehicle-error" style="color:var(--red); font-size:12.5px; min-height:0; margin-bottom:8px;"></div>
+    <div class="stat-strip" id="vehicle-stats"></div>
+    <div id="vehicle-list" style="margin-top:14px;"></div>
+
+    <div id="vehicle-manager-box" style="display:none;">
+      <div class="sub-h">درخواست‌های رزرو در انتظار بررسی</div>
+      <div id="pending-reservations"></div>
+
+      <div class="sub-h" id="vehicle-form-title">افزودن خودرو و راننده</div>
+      <div class="grid">
+        <div class="field"><label>نام / مدل خودرو</label><input type="text" id="v-name" placeholder="مثلاً پیکان وانت، سمند، تویوتا هایلوکس"></div>
+        <div class="field"><label>پلاک</label><input type="text" id="v-plate" placeholder="مثلاً ۱۲ ب ۳۴۵ ایران ۶۷"></div>
+        <div class="field"><label>نام راننده</label><input type="text" id="v-driver" placeholder="نام و نام خانوادگی راننده"></div>
+        <div class="field"><label>شماره‌ی تماس راننده</label><input type="text" id="v-phone" inputmode="tel" placeholder="۰۹۱۲..."></div>
+      </div>
+      <div class="actions-row">
+        <button class="btn btn-ghost" id="v-cancel-edit-btn" style="display:none;">انصراف از ویرایش</button>
+        <button class="btn btn-primary" id="v-save-btn">افزودن خودرو</button>
+      </div>
+    </div>
+
+    <div class="sub-h">درخواست رزرو خودرو</div>
+    <div class="grid">
+      <div class="field"><label>تاریخ ماموریت</label><input type="text" id="r-date" placeholder="مثلاً ۱۴۰۴/۰۵/۲۹"></div>
+      <div class="field"><label>مقصد</label><input type="text" id="r-destination" placeholder="مثلاً دکل ۴۵ یا اهواز"></div>
+      <div class="field"><label>هدف ماموریت</label><input type="text" id="r-purpose" placeholder="مثلاً سمپاشی، بازدید بهداشت"></div>
+      <div class="field"><label>تعداد یا اسامی همراهان</label><input type="text" id="r-passengers" placeholder="مثلاً ۳ نفر"></div>
+    </div>
+    <div class="field"><label>خودروی مورد نظر (اختیاری)</label><select id="r-vehicle"></select></div>
+    <div id="r-error" style="color:var(--red); font-size:12.5px; min-height:0; margin-bottom:8px;"></div>
+    <div class="actions-row"><button class="btn btn-primary" id="r-submit-btn">ثبت درخواست رزرو</button></div>
+
+    <div class="sub-h">درخواست‌های رزرو من</div>
+    <div id="my-reservations"></div>
+  </div>
+
   <div class="panel" id="admin-lock-panel">
     <h2><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" style="vertical-align:-3px; margin-inline-end:4px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>گزارش‌های ثبت‌شده و گزارش هر دکل</h2>
     <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
@@ -443,6 +493,29 @@
   </div>
 
   <div id="admin-gated-content" style="display:none;">
+
+  <div class="panel">
+    <h2>مدیریت لیست دکل‌ها</h2>
+    <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
+      دکل جدید اضافه کن یا یه دکل رو حذف کن. با حذف یه دکل، گزارش‌های قبلیش پاک نمی‌شن؛ فقط از لیست انتخاب و از لیست عقب‌افتاده‌ها حذف می‌شه.
+    </p>
+    <div style="display:flex; gap:10px; margin-bottom:12px;">
+      <input type="text" id="rig-add-input" inputmode="numeric" placeholder="شماره‌ی دکل جدید، مثلاً ۹۴" style="flex:1;">
+      <button type="button" id="rig-add-btn" class="btn btn-primary" style="white-space:nowrap;">افزودن دکل</button>
+    </div>
+    <div id="rig-admin-msg" style="color:var(--red); font-size:12.5px; min-height:0; margin-bottom:8px;"></div>
+    <div id="rig-admin-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+  </div>
+
+  <div class="panel">
+    <h2>مسئول بانک خودرو</h2>
+    <p style="color:var(--paper-dim); font-size:13px; line-height:1.8; margin-top:-8px;">
+      از بین افراد ثبت‌شده، کسی (یا کسانی) رو انتخاب کن که بتونه خودروها و راننده‌ها رو تعریف کنه، وضعیتشون رو عوض کنه و درخواست‌های رزرو رو تایید یا رد کنه.
+    </p>
+    <div id="manager-admin-list" style="max-height:260px; overflow:auto; margin-bottom:12px;"></div>
+    <div id="manager-admin-msg" style="color:var(--red); font-size:12.5px; min-height:0; margin-bottom:8px;"></div>
+    <button type="button" id="manager-save-btn" class="btn btn-primary" style="width:100%;">ذخیره‌ی مسئول بانک خودرو</button>
+  </div>
 
   <div class="panel">
     <h2>گزارش هر دکل</h2>
@@ -576,8 +649,18 @@ function initSettingsPanel(){
 // =====================================================================
 // دکل‌های موجود: از شماره ۲۱ تا ۹۳
 // =====================================================================
-const RIG_MIN = 21;
-const RIG_MAX = 93;
+const CONFIG_CACHE_KEY = 'hse-config-cache';
+let RIG_LIST = [];
+for(let n = 21; n <= 93; n++) RIG_LIST.push(n);
+let VEHICLE_MANAGERS = [];
+let REGISTERED_NAMES = [];
+(function loadCachedConfig(){
+  try{
+    const c = JSON.parse(localStorage.getItem(CONFIG_CACHE_KEY) || 'null');
+    if(c && Array.isArray(c.rigs) && c.rigs.length) RIG_LIST = c.rigs;
+    if(c && Array.isArray(c.vehicleManagers)) VEHICLE_MANAGERS = c.vehicleManagers;
+  }catch(e){}
+})();
 const OVERDUE_DAYS_THRESHOLD = 90; // سه ماه
 
 function rigLabel(n){
@@ -588,13 +671,15 @@ function rigName(n){
 }
 function populateRigSelect(){
   const sel = document.getElementById('f-dest-name-rig');
+  const prev = sel.value;
   sel.innerHTML = '';
-  for(let n = RIG_MIN; n <= RIG_MAX; n++){
+  RIG_LIST.forEach(n => {
     const opt = document.createElement('option');
     opt.value = rigName(n);
     opt.textContent = rigLabel(n);
     sel.appendChild(opt);
-  }
+  });
+  if(prev && Array.from(sel.options).some(o => o.value === prev)) sel.value = prev;
 }
 function daysSince(isoStr){
   if(!isoStr) return null;
@@ -617,7 +702,7 @@ function getRigStats(rn){
 }
 function computeOverdueRigs(){
   const overdue = [];
-  for(let n = RIG_MIN; n <= RIG_MAX; n++){
+  for(const n of RIG_LIST){
     const rn = rigName(n);
     const { lastSpray, lastHealth } = getRigStats(rn);
     const sprayDays = lastSpray ? daysSince(lastSpray.updatedAt) : null;
@@ -642,7 +727,13 @@ function setUserName(name){
   updateUserBadge();
 }
 
+const USER_SESSION_KEY = 'hse-user-session';
+const ADMIN_SESSION_KEY = 'hse-admin-session';
+function getUserSession(){ return localStorage.getItem(USER_SESSION_KEY) || ''; }
+function getAdminSession(){ return localStorage.getItem(ADMIN_SESSION_KEY) || ''; }
+
 function clearUserName(){
+  localStorage.removeItem(USER_SESSION_KEY);
   localStorage.removeItem(USER_NAME_STORAGE_KEY);
   updateUserBadge();
 }
@@ -693,19 +784,19 @@ try{ localStorage.removeItem('hse-admin-unlocked'); }catch(e){} // پرچم قد
 
 function isAdminUnlocked(){
   const me = getUserName();
-  return !!me && localStorage.getItem(ADMIN_UNLOCKED_STORAGE_KEY) === me;
+  return !!me && localStorage.getItem(ADMIN_UNLOCKED_STORAGE_KEY) === me && !!getAdminSession();
 }
 
 let applyAdminLockState = function(){};
 
-async function checkAdminAccess(password){
+async function checkAdminAccess(password){ // اسم کاربر هم همراهش فرستاده می‌شه
   if(!isApiConfigured()){
     throw new Error('اتصال به پایگاه داده تنظیم نشده.');
   }
   const res = await fetch(getApiUrl(), {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'checkAdminAccess', password, token: getApiToken() })
+    body: JSON.stringify({ action: 'checkAdminAccess', name: getUserName(), password, token: getApiToken() })
   });
   if(!res.ok){
     throw new Error('پاسخ سرور: ' + res.status);
@@ -725,6 +816,8 @@ async function refreshRegisteredNamesList(){
     const json = await res.json();
     if(!json.ok || !Array.isArray(json.names)) return;
     const datalist = document.getElementById('registered-names-list');
+    REGISTERED_NAMES = json.names.slice();
+    if(typeof renderManagerAdmin === 'function') renderManagerAdmin();
     datalist.innerHTML = json.names.map(n => `<option value="${escapeHtml(n)}"></option>`).join('');
   }catch(e){
     console.error('refreshRegisteredNamesList error:', e);
@@ -748,6 +841,7 @@ function initAdminGate(){
       input.value = '';
       errorEl.textContent = '';
     }
+    if(typeof onAdminStateChanged === 'function') onAdminStateChanged();
   };
   applyAdminLockState();
 
@@ -769,6 +863,7 @@ function initAdminGate(){
       const result = await checkAdminAccess(password);
       if(result.ok){
         localStorage.setItem(ADMIN_UNLOCKED_STORAGE_KEY, getUserName());
+        localStorage.setItem(ADMIN_SESSION_KEY, result.adminSession || '');
         applyAdminLockState();
       } else {
         errorEl.textContent = result.error || 'رمز اشتباهه.';
@@ -822,6 +917,7 @@ function initNameGate(onReady){
       const result = await authUser(name, password);
       if(result.ok){
         setUserName(name);
+        localStorage.setItem(USER_SESSION_KEY, result.session || '');
         applyAdminLockState();
         hideNameGate();
         toast(result.mode === 'register' ? 'اسم و رمزت ثبت شد' : 'خوش اومدی، ' + name);
@@ -859,10 +955,15 @@ function initNameGate(onReady){
     showNameGate(getUserName());
   });
 
-  if(existing){
+  if(existing && getUserSession()){
     appStarted = true;
     refreshRegisteredNamesList();
     onReady();
+  } else if(existing){
+    // کاربری که قبل از اضافه شدن بانک خودرو وارد شده: یک بار باید دوباره رمزش رو بزنه
+    refreshRegisteredNamesList();
+    showNameGate(existing);
+    errorEl.textContent = 'برای فعال شدن بخش‌های جدید، یک بار دوباره رمزت رو وارد کن.';
   } else {
     showNameGate('');
   }
@@ -1033,7 +1134,12 @@ function getDestNameValue(){
 }
 function setDestNameValue(destType, name){
   if(destType === 'دکل'){
-    document.getElementById('f-dest-name-rig').value = name;
+    const rigSel = document.getElementById('f-dest-name-rig');
+    if(name && !Array.from(rigSel.options).some(o => o.value === name)){
+      // دکلی که بعداً از لیست حذف شده ولی گزارش قدیمی‌ش رو داریم ویرایش می‌کنیم
+      rigSel.add(new Option(name.replace(/\d+/g, m => toPersianDigits(m)) + ' (حذف‌شده از لیست)', name));
+    }
+    rigSel.value = name;
     document.getElementById('f-dest-name-text').value = '';
   } else {
     document.getElementById('f-dest-name-text').value = name;
@@ -1045,7 +1151,7 @@ document.getElementById('f-dest-type').addEventListener('change', updateDestName
 function resetForm(){
   document.getElementById('f-date').value = todayJalali();
   document.getElementById('f-dest-type').value = 'دکل';
-  setDestNameValue('دکل', rigName(RIG_MIN));
+  setDestNameValue('دکل', rigName(RIG_LIST[0]));
   document.getElementById('f-location').value = '';
   document.getElementById('f-mission-report').value = '';
   document.getElementById('f-spray-report').value = '';
@@ -1481,15 +1587,17 @@ function renderRigLookup(){
 
 function populateRigLookupSelect(){
   const sel = document.getElementById('rig-lookup-select');
+  const prev = sel.value;
   sel.innerHTML = '';
-  for(let n = RIG_MIN; n <= RIG_MAX; n++){
+  RIG_LIST.forEach(n => {
     const opt = document.createElement('option');
     opt.value = rigName(n);
     opt.textContent = rigLabel(n);
     sel.appendChild(opt);
-  }
-  sel.addEventListener('change', renderRigLookup);
+  });
+  if(prev && Array.from(sel.options).some(o => o.value === prev)) sel.value = prev;
 }
+document.getElementById('rig-lookup-select').addEventListener('change', () => renderRigLookup());
 
 function renderRecords(){
   const search = document.getElementById('search-input').value.trim().toLowerCase();
@@ -1625,6 +1733,435 @@ async function loadRecords(){
 document.getElementById('search-input').addEventListener('input', renderRecords);
 document.getElementById('filter-purpose').addEventListener('change', renderRecords);
 
+// =====================================================================
+// درخواست‌های عمومی به سرور، تنظیمات (لیست دکل‌ها)، و بانک خودرو
+// =====================================================================
+async function apiPost(payload){
+  if(!isApiConfigured()){
+    throw new Error('اتصال به پایگاه داده تنظیم نشده.');
+  }
+  const res = await fetch(getApiUrl(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(Object.assign({ token: getApiToken() }, payload))
+  });
+  if(!res.ok) throw new Error('پاسخ سرور: ' + res.status);
+  return await res.json();
+}
+
+function authFields(){
+  return {
+    name: getUserName(),
+    session: getUserSession(),
+    adminSession: isAdminUnlocked() ? getAdminSession() : ''
+  };
+}
+
+function saveConfigCache(){
+  try{
+    localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify({ rigs: RIG_LIST, vehicleManagers: VEHICLE_MANAGERS }));
+  }catch(e){}
+}
+
+function applyConfig(){
+  populateRigSelect();
+  populateRigLookupSelect();
+  renderOverdueRigs();
+  renderRigLookup();
+  renderRigAdmin();
+  renderManagerAdmin();
+  renderVehicleBank();
+}
+
+async function loadConfig(){
+  try{
+    const json = await apiPost({ action: 'getConfig' });
+    if(!json.ok) return;
+    if(Array.isArray(json.rigs) && json.rigs.length) RIG_LIST = json.rigs.map(Number);
+    if(Array.isArray(json.vehicleManagers)) VEHICLE_MANAGERS = json.vehicleManagers;
+    saveConfigCache();
+    applyConfig();
+  }catch(e){
+    console.error('loadConfig error:', e);
+  }
+}
+
+// ---------------- مدیریت لیست دکل‌ها (فقط مدیر) ----------------
+function renderRigAdmin(){
+  const wrap = document.getElementById('rig-admin-list');
+  if(!wrap) return;
+  const sorted = RIG_LIST.slice().sort((a, b) => a - b);
+  wrap.innerHTML = sorted.map(n => `
+    <span class="chip">${escapeHtml(rigLabel(n))}<button type="button" data-rig-del="${n}" title="حذف">×</button></span>
+  `).join('');
+}
+
+async function saveRigList(newList){
+  const msg = document.getElementById('rig-admin-msg');
+  msg.textContent = '';
+  try{
+    const json = await apiPost({ action: 'setRigs', name: getUserName(), adminSession: getAdminSession(), rigs: newList });
+    if(!json.ok){
+      msg.textContent = json.error || 'ذخیره نشد.';
+      return false;
+    }
+    RIG_LIST = json.rigs.map(Number);
+    saveConfigCache();
+    applyConfig();
+    return true;
+  }catch(e){
+    msg.textContent = 'خطا در ارتباط: ' + ((e && e.message) || 'نامشخص');
+    return false;
+  }
+}
+
+document.getElementById('rig-add-btn').addEventListener('click', async () => {
+  const input = document.getElementById('rig-add-input');
+  const msg = document.getElementById('rig-admin-msg');
+  const raw = input.value.replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d))).trim();
+  const n = parseInt(raw, 10);
+  if(!/^\d+$/.test(raw) || !(n > 0 && n < 10000)){
+    msg.textContent = 'یه شماره‌ی معتبر وارد کن.';
+    return;
+  }
+  if(RIG_LIST.includes(n)){
+    msg.textContent = rigLabel(n) + ' از قبل توی لیست هست.';
+    return;
+  }
+  if(await saveRigList(RIG_LIST.concat([n]))){
+    input.value = '';
+    toast(rigLabel(n) + ' اضافه شد');
+  }
+});
+document.getElementById('rig-add-input').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('rig-add-btn').click(); }
+});
+document.getElementById('rig-admin-list').addEventListener('click', async (e) => {
+  const btn = e.target.closest('[data-rig-del]');
+  if(!btn) return;
+  const n = Number(btn.getAttribute('data-rig-del'));
+  const msg = document.getElementById('rig-admin-msg');
+  if(RIG_LIST.length <= 1){
+    msg.textContent = 'حداقل یه دکل باید توی لیست بمونه.';
+    return;
+  }
+  if(!confirm(rigLabel(n) + ' از لیست حذف بشه؟ گزارش‌های قبلیش پاک نمی‌شن.')) return;
+  if(await saveRigList(RIG_LIST.filter(x => x !== n))){
+    toast(rigLabel(n) + ' حذف شد');
+  }
+});
+
+// ---------------- انتخاب مسئول بانک خودرو (فقط مدیر) ----------------
+let managerDraft = null;
+function renderManagerAdmin(){
+  const wrap = document.getElementById('manager-admin-list');
+  if(!wrap) return;
+  if(managerDraft === null) managerDraft = VEHICLE_MANAGERS.slice();
+  const names = Array.from(new Set(REGISTERED_NAMES.concat(VEHICLE_MANAGERS)));
+  if(names.length === 0){
+    wrap.innerHTML = '<div class="empty" style="padding:16px;">هنوز کسی ثبت‌نام نکرده.</div>';
+    return;
+  }
+  wrap.innerHTML = names.map(n => `
+    <label class="name-check"><input type="checkbox" data-mgr="${escapeHtml(n)}" ${managerDraft.includes(n) ? 'checked' : ''}> ${escapeHtml(n)}</label>
+  `).join('');
+}
+document.getElementById('manager-admin-list').addEventListener('change', (e) => {
+  const cb = e.target.closest('[data-mgr]');
+  if(!cb) return;
+  const n = cb.getAttribute('data-mgr');
+  if(managerDraft === null) managerDraft = VEHICLE_MANAGERS.slice();
+  managerDraft = managerDraft.filter(x => x !== n);
+  if(cb.checked) managerDraft.push(n);
+});
+document.getElementById('manager-save-btn').addEventListener('click', async () => {
+  const msg = document.getElementById('manager-admin-msg');
+  msg.textContent = '';
+  try{
+    const json = await apiPost({ action: 'setVehicleManagers', name: getUserName(), adminSession: getAdminSession(), names: managerDraft || VEHICLE_MANAGERS });
+    if(!json.ok){ msg.textContent = json.error || 'ذخیره نشد.'; return; }
+    VEHICLE_MANAGERS = json.vehicleManagers;
+    managerDraft = VEHICLE_MANAGERS.slice();
+    saveConfigCache();
+    renderManagerAdmin();
+    loadVehicleBank();
+    toast('مسئول بانک خودرو ذخیره شد');
+  }catch(e){
+    msg.textContent = 'خطا در ارتباط: ' + ((e && e.message) || 'نامشخص');
+  }
+});
+
+// ---------------- بانک خودرو ----------------
+let vehicleData = { vehicles: [], reservations: [], manager: false, loaded: false };
+let editingVehicleId = null;
+
+function formatDateTimeFa(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  if(isNaN(d.getTime())) return '';
+  try{ return d.toLocaleString('fa-IR', { dateStyle: 'short', timeStyle: 'short' }); }catch(e){ return d.toLocaleString(); }
+}
+
+function onAdminStateChanged(){
+  managerDraft = null;
+  renderManagerAdmin();
+  loadVehicleBank();
+}
+
+async function loadVehicleBank(){
+  const errEl = document.getElementById('vehicle-error');
+  if(!getUserName() || !getUserSession()) return;
+  try{
+    const json = await apiPost(Object.assign({ action: 'listVehicles' }, authFields()));
+    if(!json.ok){
+      errEl.textContent = json.error || 'بارگذاری بانک خودرو انجام نشد.';
+      return;
+    }
+    errEl.textContent = '';
+    vehicleData = { vehicles: json.vehicles || [], reservations: json.reservations || [], manager: !!json.manager, loaded: true };
+    renderVehicleBank();
+  }catch(e){
+    errEl.textContent = 'خطا در بارگذاری بانک خودرو: ' + ((e && e.message) || 'نامشخص');
+  }
+}
+
+// یه درخواست مدیریتی (فقط مسئول) و بعدش بارگذاری دوباره
+async function vehicleAction(payload, okMsg){
+  const errEl = document.getElementById('vehicle-error');
+  errEl.textContent = '';
+  try{
+    const json = await apiPost(Object.assign({}, authFields(), payload));
+    if(!json.ok){
+      errEl.textContent = json.error || 'انجام نشد.';
+      toast(json.error || 'انجام نشد.', true);
+      return null;
+    }
+    if(okMsg) toast(okMsg);
+    await loadVehicleBank();
+    return json;
+  }catch(e){
+    errEl.textContent = 'خطا در ارتباط: ' + ((e && e.message) || 'نامشخص');
+    return null;
+  }
+}
+
+const RES_STATUS = {
+  pending: { label: 'در انتظار بررسی', cls: 'spray' },
+  approved: { label: 'تایید شد', cls: 'free' },
+  rejected: { label: 'رد شد', cls: 'danger' },
+  cancelled: { label: 'لغو شد', cls: 'muted' }
+};
+
+function vehicleById(id){
+  return vehicleData.vehicles.find(v => String(v.id) === String(id)) || null;
+}
+
+function renderVehicleBank(){
+  const listEl = document.getElementById('vehicle-list');
+  if(!listEl) return;
+  const vehicles = vehicleData.vehicles;
+  const free = vehicles.filter(v => v.status !== 'mission').length;
+  const busy = vehicles.length - free;
+  document.getElementById('vehicle-free-badge').textContent = vehicleData.loaded ? (toPersianDigits(free) + ' آزاد') : '—';
+  document.getElementById('vehicle-stats').innerHTML = `
+    <div class="stat"><div class="n">${toPersianDigits(vehicles.length)}</div><div class="l">کل خودروها</div></div>
+    <div class="stat"><div class="n" style="color:var(--green);">${toPersianDigits(free)}</div><div class="l">آزاد</div></div>
+    <div class="stat"><div class="n" style="color:var(--red);">${toPersianDigits(busy)}</div><div class="l">در ماموریت</div></div>`;
+
+  const mgr = vehicleData.manager;
+  document.getElementById('vehicle-manager-box').style.display = mgr ? 'block' : 'none';
+
+  if(vehicles.length === 0){
+    listEl.innerHTML = `<div class="empty" style="padding:20px;">${vehicleData.loaded ? 'هنوز خودرویی تعریف نشده.' + (mgr ? '' : ' مسئول بانک خودرو باید اضافه کنه.') : 'در حال بارگذاری...'}</div>`;
+  } else {
+    listEl.innerHTML = vehicles.map(v => {
+      const onMission = v.status === 'mission';
+      const phone = String(v.driverPhone || '').trim();
+      return `
+      <div class="record" style="grid-template-columns:1fr;">
+        <div>
+          <div class="rec-head">
+            <div>
+              <div class="rec-title">${escapeHtml(v.name)}${v.plate ? ' — ' + escapeHtml(v.plate) : ''}</div>
+              <div class="rec-sub">راننده: ${escapeHtml(v.driver || 'مشخص نشده')}${phone ? ' — <a href="tel:' + escapeHtml(phone) + '" style="color:var(--yellow);">' + escapeHtml(phone) + '</a>' : ''}</div>
+            </div>
+            <div class="tag-row"><span class="tag ${onMission ? 'danger' : 'free'}">${onMission ? 'در ماموریت' : 'آزاد'}</span></div>
+          </div>
+          ${onMission ? `<div class="rec-sub">مقصد: ${escapeHtml(v.destination || '—')}${v.note ? ' — ' + escapeHtml(v.note) : ''}${v.since ? ' — از ' + escapeHtml(formatDateTimeFa(v.since)) : ''}</div>` : ''}
+          ${mgr ? `<div class="row-btns">
+            ${onMission
+              ? `<button type="button" class="btn btn-primary btn-sm" data-v-free="${escapeHtml(v.id)}">برگشت — آزاد شد</button>`
+              : `<button type="button" class="btn btn-primary btn-sm" data-v-mission="${escapeHtml(v.id)}">ثبت ماموریت</button>`}
+            <button type="button" class="btn-edit-sm" data-v-edit="${escapeHtml(v.id)}">ویرایش</button>
+            <button type="button" class="btn-danger-sm" data-v-del="${escapeHtml(v.id)}">حذف</button>
+          </div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ----- درخواست‌های در انتظار (مسئول) -----
+  const pendingEl = document.getElementById('pending-reservations');
+  if(mgr){
+    const pending = vehicleData.reservations.filter(r => r.status === 'pending')
+      .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+    if(pending.length === 0){
+      pendingEl.innerHTML = '<div class="empty" style="padding:16px;">درخواست در انتظاری نیست.</div>';
+    } else {
+      pendingEl.innerHTML = pending.map(r => {
+        const freeVehicles = vehicles.filter(v => v.status !== 'mission');
+        const opts = freeVehicles.map(v => `<option value="${escapeHtml(v.id)}" ${String(v.id) === String(r.vehicleId) ? 'selected' : ''}>${escapeHtml(v.name)}${v.plate ? ' — ' + escapeHtml(v.plate) : ''}${v.driver ? ' (' + escapeHtml(v.driver) + ')' : ''}</option>`).join('');
+        return `
+        <div class="record" style="grid-template-columns:1fr;">
+          <div>
+            <div class="rec-head">
+              <div>
+                <div class="rec-title">${escapeHtml(r.requester)} ← ${escapeHtml(r.destination)}</div>
+                <div class="rec-sub">${escapeHtml(r.date || '')}${r.purpose ? ' — ' + escapeHtml(r.purpose) : ''}${r.passengers ? ' — همراهان: ' + escapeHtml(r.passengers) : ''}</div>
+              </div>
+              <div class="tag-row"><span class="tag spray">در انتظار</span></div>
+            </div>
+            ${freeVehicles.length ? `<select data-res-vehicle="${escapeHtml(r.id)}" style="margin-top:6px;"><option value="">— خودروی آزاد رو انتخاب کن —</option>${opts}</select>` : '<div class="rec-sub" style="color:var(--red);">الان هیچ خودروی آزادی نیست.</div>'}
+            <div class="row-btns">
+              <button type="button" class="btn btn-primary btn-sm" data-res-approve="${escapeHtml(r.id)}" ${freeVehicles.length ? '' : 'disabled'}>تایید و تخصیص خودرو</button>
+              <button type="button" class="btn-danger-sm" data-res-reject="${escapeHtml(r.id)}">رد</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ----- فرم درخواست: انتخاب خودرو -----
+  const rv = document.getElementById('r-vehicle');
+  const prevRv = rv.value;
+  rv.innerHTML = '<option value="">هر خودروی آزاد (مسئول تعیین می‌کنه)</option>' + vehicles.map(v =>
+    `<option value="${escapeHtml(v.id)}">${escapeHtml(v.name)}${v.plate ? ' — ' + escapeHtml(v.plate) : ''}${v.status === 'mission' ? ' (الان در ماموریت)' : ''}</option>`).join('');
+  if(prevRv && Array.from(rv.options).some(o => o.value === prevRv)) rv.value = prevRv;
+  const rDate = document.getElementById('r-date');
+  if(!rDate.value) rDate.value = todayJalali();
+
+  // ----- درخواست‌های من -----
+  const mineEl = document.getElementById('my-reservations');
+  const mine = vehicleData.reservations.filter(r => r.requester === getUserName())
+    .sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+  if(mine.length === 0){
+    mineEl.innerHTML = '<div class="empty" style="padding:16px;">هنوز درخواستی ثبت نکردی.</div>';
+  } else {
+    mineEl.innerHTML = mine.map(r => {
+      const st = RES_STATUS[r.status] || { label: r.status, cls: 'muted' };
+      const veh = r.status === 'approved' ? vehicleById(r.vehicleId) : null;
+      return `
+      <div class="record" style="grid-template-columns:1fr;">
+        <div>
+          <div class="rec-head">
+            <div>
+              <div class="rec-title">${escapeHtml(r.destination)}</div>
+              <div class="rec-sub">${escapeHtml(r.date || '')}${r.purpose ? ' — ' + escapeHtml(r.purpose) : ''}</div>
+            </div>
+            <div class="tag-row"><span class="tag ${st.cls}">${escapeHtml(st.label)}</span></div>
+          </div>
+          ${veh ? `<div class="rec-sub">خودرو: ${escapeHtml(veh.name)}${veh.plate ? ' — ' + escapeHtml(veh.plate) : ''} — راننده: ${escapeHtml(veh.driver || '—')}${veh.driverPhone ? ' (' + escapeHtml(String(veh.driverPhone)) + ')' : ''}</div>` : ''}
+          ${r.status === 'pending' ? `<div class="row-btns"><button type="button" class="btn-danger-sm" data-res-cancel="${escapeHtml(r.id)}">لغو درخواست</button></div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+document.getElementById('vehicle-panel').addEventListener('click', async (e) => {
+  const t = e.target;
+  let el;
+  if((el = t.closest('[data-v-mission]'))){
+    const id = el.getAttribute('data-v-mission');
+    const dest = prompt('مقصد ماموریت؟');
+    if(dest === null) return;
+    if(!dest.trim()){ toast('مقصد رو بنویس', true); return; }
+    await vehicleAction({ action: 'setVehicleStatus', id, status: 'mission', destination: dest.trim() }, 'خودرو در ماموریت ثبت شد');
+  } else if((el = t.closest('[data-v-free]'))){
+    await vehicleAction({ action: 'setVehicleStatus', id: el.getAttribute('data-v-free'), status: 'free' }, 'خودرو آزاد شد');
+  } else if((el = t.closest('[data-v-del]'))){
+    const v = vehicleById(el.getAttribute('data-v-del'));
+    if(!confirm('«' + (v ? v.name : 'این خودرو') + '» حذف بشه؟')) return;
+    await vehicleAction({ action: 'deleteVehicle', id: el.getAttribute('data-v-del') }, 'خودرو حذف شد');
+  } else if((el = t.closest('[data-v-edit]'))){
+    const v = vehicleById(el.getAttribute('data-v-edit'));
+    if(!v) return;
+    editingVehicleId = v.id;
+    document.getElementById('v-name').value = v.name || '';
+    document.getElementById('v-plate').value = v.plate || '';
+    document.getElementById('v-driver').value = v.driver || '';
+    document.getElementById('v-phone').value = v.driverPhone || '';
+    document.getElementById('vehicle-form-title').textContent = 'ویرایش خودرو و راننده';
+    document.getElementById('v-save-btn').textContent = 'ذخیره‌ی تغییرات';
+    document.getElementById('v-cancel-edit-btn').style.display = '';
+    document.getElementById('v-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } else if((el = t.closest('[data-res-approve]'))){
+    const id = el.getAttribute('data-res-approve');
+    const sel = document.querySelector('[data-res-vehicle="' + id + '"]');
+    if(!sel || !sel.value){ toast('اول یه خودروی آزاد انتخاب کن', true); return; }
+    await vehicleAction({ action: 'handleReservation', id, decision: 'approved', vehicleId: sel.value }, 'درخواست تایید شد');
+  } else if((el = t.closest('[data-res-reject]'))){
+    if(!confirm('این درخواست رد بشه؟')) return;
+    await vehicleAction({ action: 'handleReservation', id: el.getAttribute('data-res-reject'), decision: 'rejected' }, 'درخواست رد شد');
+  } else if((el = t.closest('[data-res-cancel]'))){
+    if(!confirm('درخواستت لغو بشه؟')) return;
+    await vehicleAction({ action: 'cancelReservation', id: el.getAttribute('data-res-cancel') }, 'درخواست لغو شد');
+  }
+});
+
+function resetVehicleForm(){
+  editingVehicleId = null;
+  ['v-name', 'v-plate', 'v-driver', 'v-phone'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('vehicle-form-title').textContent = 'افزودن خودرو و راننده';
+  document.getElementById('v-save-btn').textContent = 'افزودن خودرو';
+  document.getElementById('v-cancel-edit-btn').style.display = 'none';
+}
+document.getElementById('v-cancel-edit-btn').addEventListener('click', resetVehicleForm);
+document.getElementById('v-save-btn').addEventListener('click', async () => {
+  const name = document.getElementById('v-name').value.trim();
+  if(!name){ toast('اسم یا مدل خودرو رو بنویس', true); return; }
+  const vehicle = {
+    id: editingVehicleId || '',
+    name,
+    plate: document.getElementById('v-plate').value.trim(),
+    driver: document.getElementById('v-driver').value.trim(),
+    driverPhone: document.getElementById('v-phone').value.trim()
+  };
+  const ok = await vehicleAction({ action: 'saveVehicle', vehicle }, editingVehicleId ? 'تغییرات ذخیره شد' : 'خودرو اضافه شد');
+  if(ok) resetVehicleForm();
+});
+
+document.getElementById('r-submit-btn').addEventListener('click', async () => {
+  const errEl = document.getElementById('r-error');
+  errEl.textContent = '';
+  const destination = document.getElementById('r-destination').value.trim();
+  if(!destination){ errEl.textContent = 'مقصد رو بنویس.'; return; }
+  const btn = document.getElementById('r-submit-btn');
+  btn.disabled = true;
+  try{
+    const json = await apiPost(Object.assign({
+      action: 'createReservation',
+      reservation: {
+        date: document.getElementById('r-date').value.trim(),
+        destination,
+        purpose: document.getElementById('r-purpose').value.trim(),
+        passengers: document.getElementById('r-passengers').value.trim(),
+        vehicleId: document.getElementById('r-vehicle').value
+      }
+    }, authFields()));
+    if(!json.ok){ errEl.textContent = json.error || 'ثبت نشد.'; return; }
+    ['r-destination', 'r-purpose', 'r-passengers'].forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('r-vehicle').value = '';
+    toast('درخواست رزرو ثبت شد');
+    await loadVehicleBank();
+  }catch(e){
+    errEl.textContent = 'خطا در ارتباط: ' + ((e && e.message) || 'نامشخص');
+  }finally{
+    btn.disabled = false;
+  }
+});
+
 // init
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
@@ -1689,16 +2226,8 @@ document.getElementById('my-reports-toggle-btn').addEventListener('click', () =>
 });
 renderOverdueRigs();
 renderRigLookup();
+renderRigAdmin();
+renderManagerAdmin();
+renderVehicleBank();
 renderMyReports();
-updateOfflineBanner();
-trySyncOfflineQueue();
-initAdminGate();
-initSettingsPanel();
-initNameGate(() => {
-  resetForm();
-  loadRecords();
-});
-</script>
-
-</body>
-</html>
+updateOfflineBann
